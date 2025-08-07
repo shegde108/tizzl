@@ -1,1 +1,1 @@
-web: cd tizzl && python run.py
+web: python3 tizzl/run.py
