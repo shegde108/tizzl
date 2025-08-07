@@ -5,11 +5,11 @@ from typing import List, Optional, Dict, Any
 import logging
 from pydantic import BaseModel
 
-from tizzl.models import Product, UserProfile, UserQuery, StylistResponse
-from tizzl.services.stylist_service import StylistService
-from tizzl.core.vector_store import VectorStore
-from tizzl.core.config import settings
-from tizzl.utils.data_loader import DataLoader
+from models import Product, UserProfile, UserQuery, StylistResponse
+from services.stylist_service import StylistService
+from core.vector_store import VectorStore
+from core.config import settings
+from utils.data_loader import DataLoader
 
 logging.basicConfig(level=getattr(logging, settings.log_level))
 logger = logging.getLogger(__name__)
@@ -29,7 +29,7 @@ app.add_middleware(
 )
 
 # Include retailer router
-from tizzl.api.retailer_endpoints import router as retailer_router
+from api.retailer_endpoints import router as retailer_router
 app.include_router(retailer_router)
 
 stylist_service = StylistService()
@@ -261,7 +261,7 @@ async def clear_all_data():
         raise HTTPException(status_code=500, detail=str(e))
 
 async def _get_user_profile(user_id: str) -> Optional[UserProfile]:
-    from tizzl.models import UserProfile, StylePreference
+    from models import UserProfile, StylePreference
     
     return UserProfile(
         user_id=user_id,

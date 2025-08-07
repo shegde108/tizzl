@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import uvicorn
-from tizzl.api.main import app
-from tizzl.core.config import settings
+from api.main import app
+from core.config import settings
 import logging
 
 logging.basicConfig(
