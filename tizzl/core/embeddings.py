@@ -3,7 +3,7 @@ from typing import List, Optional, Dict, Any
 import openai
 from sentence_transformers import SentenceTransformer
 import logging
-from .config import settings
+from tizzl.core.config import settings
 
 logger = logging.getLogger(__name__)
 

@@ -1,7 +1,7 @@
 from typing import List, Optional, Dict, Any
 from pydantic import BaseModel, Field
 from datetime import datetime
-from .product import Product
+from tizzl.models.product import Product
 
 class OutfitItem(BaseModel):
     product: Product

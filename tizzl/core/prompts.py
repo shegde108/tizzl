@@ -1,5 +1,5 @@
 from typing import List, Dict, Any, Optional
-from ..models import Product, UserProfile, UserQuery
+from tizzl.models import Product, UserProfile, UserQuery
 
 class PromptTemplates:
     
