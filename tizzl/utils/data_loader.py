@@ -3,7 +3,7 @@ import json
 import io
 from typing import List, Dict, Any, Optional
 import logging
-from tizzl.models import Product, Category, Occasion, Season, ProductAttribute
+from models import Product, Category, Occasion, Season, ProductAttribute
 
 logger = logging.getLogger(__name__)
 

@@ -1,10 +1,10 @@
 from typing import List, Dict, Any, Optional
 import logging
-from tizzl.core.vector_store import VectorStore
-from tizzl.core.embeddings import EmbeddingService
-from tizzl.models import Product, UserQuery
-from tizzl.services.llm_service import LLMService
-from tizzl.core.config import settings
+from core.vector_store import VectorStore
+from core.embeddings import EmbeddingService
+from models import Product, UserQuery
+from services.llm_service import LLMService
+from core.config import settings
 
 logger = logging.getLogger(__name__)
 
@@ -130,7 +130,7 @@ class RetrievalService:
         return products
     
     async def _fetch_product(self, product_id: str, metadata: Dict[str, Any]) -> Optional[Product]:
-        from tizzl.models import Category, Occasion, Season, ProductAttribute
+        from models import Category, Occasion, Season, ProductAttribute
         
         try:
             colors = metadata.get("colors", "").split(",") if metadata.get("colors") else []

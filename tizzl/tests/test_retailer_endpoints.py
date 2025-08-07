@@ -3,8 +3,8 @@ from fastapi.testclient import TestClient
 from unittest.mock import Mock, AsyncMock, patch
 import json
 
-from tizzl.api.main import app
-from tizzl.services.retailer_integration import RetailerRecommendationService
+from api.main import app
+from services.retailer_integration import RetailerRecommendationService
 
 client = TestClient(app)
 
@@ -14,7 +14,7 @@ class TestRetailerEndpoints:
     @pytest.fixture
     def mock_retailer_service(self):
         """Create a mock retailer service"""
-        with patch('tizzl.api.retailer_endpoints.retailer_service') as mock:
+        with patch('api.retailer_endpoints.retailer_service') as mock:
             yield mock
     
     def test_get_product_recommendations(self, mock_retailer_service):

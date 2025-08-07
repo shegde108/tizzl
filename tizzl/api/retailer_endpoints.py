@@ -2,6 +2,8 @@ from fastapi import APIRouter, HTTPException, Query, Body
 from typing import Optional, List, Dict, Any
 from pydantic import BaseModel, Field
 import logging
+import hashlib
+import json
 
 from services.retailer_integration import RetailerRecommendationService
 from core.config import settings
@@ -214,6 +216,3 @@ async def submit_recommendation_feedback(
         logger.error(f"Error submitting feedback: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
-# Add missing imports at the top of the file
-import hashlib
-import json

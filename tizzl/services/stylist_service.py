@@ -2,13 +2,13 @@ from typing import List, Optional, Dict, Any
 import uuid
 import time
 import logging
-from tizzl.models import (
+from models import (
     Product, UserProfile, UserQuery, 
     StylistResponse, OutfitRecommendation, OutfitItem
 )
-from tizzl.services.retrieval_service import RetrievalService
-from tizzl.services.llm_service import LLMService
-from tizzl.core.config import settings
+from services.retrieval_service import RetrievalService
+from services.llm_service import LLMService
+from core.config import settings
 
 logger = logging.getLogger(__name__)
 
@@ -252,7 +252,7 @@ class StylistService:
         return ". ".join(notes) if notes else None
     
     async def _get_product_by_id(self, product_id: str) -> Optional[Product]:
-        from tizzl.models import Category, ProductAttribute
+        from models import Category, ProductAttribute
         
         return Product(
             product_id=product_id,

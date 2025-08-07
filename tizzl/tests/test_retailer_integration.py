@@ -4,7 +4,7 @@ from unittest.mock import Mock, AsyncMock, patch
 from datetime import datetime
 import json
 
-from tizzl.services.retailer_integration import RetailerRecommendationService
+from services.retailer_integration import RetailerRecommendationService
 
 class TestRetailerRecommendationService:
     """Test suite for RetailerRecommendationService"""

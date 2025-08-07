@@ -3,9 +3,9 @@ from chromadb.config import Settings as ChromaSettings
 from typing import List, Dict, Any, Optional
 import uuid
 import logging
-from tizzl.models import Product
-from tizzl.core.config import settings
-from tizzl.core.embeddings import EmbeddingService
+from models import Product
+from core.config import settings
+from core.embeddings import EmbeddingService
 
 logger = logging.getLogger(__name__)
 

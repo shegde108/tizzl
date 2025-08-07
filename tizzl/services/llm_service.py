@@ -3,8 +3,8 @@ import anthropic
 from typing import List, Dict, Any, Optional
 import json
 import logging
-from tizzl.core.config import settings
-from tizzl.core.prompts import PromptTemplates
+from core.config import settings
+from core.prompts import PromptTemplates
 
 logger = logging.getLogger(__name__)
 
