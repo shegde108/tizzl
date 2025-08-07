@@ -3,8 +3,8 @@ from typing import Optional, List, Dict, Any
 from pydantic import BaseModel, Field
 import logging
 
-from ..services.retailer_integration import RetailerRecommendationService
-from ..core.config import settings
+from services.retailer_integration import RetailerRecommendationService
+from core.config import settings
 
 logger = logging.getLogger(__name__)
 
