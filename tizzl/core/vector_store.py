@@ -13,7 +13,11 @@ class VectorStore:
     def __init__(self):
         self.client = chromadb.PersistentClient(
             path=settings.chroma_persist_directory,
-            settings=ChromaSettings(anonymized_telemetry=False)
+            settings=ChromaSettings(
+                anonymized_telemetry=False,
+                allow_reset=True,
+                is_persistent=True
+            )
         )
         self.collection = None
         self.embedding_service = EmbeddingService()
