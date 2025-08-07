@@ -1,0 +1,1 @@
+web: cd tizzl && python run.py

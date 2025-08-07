@@ -1,0 +1,8 @@
+[phases.setup]
+nixPkgs = ["python3", "gcc"]
+
+[phases.install]
+cmds = ["python -m venv --copies /opt/venv && . /opt/venv/bin/activate && pip install -r tizzl/requirements.txt"]
+
+[start]
+cmd = "cd tizzl && python run.py"
