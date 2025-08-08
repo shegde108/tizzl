@@ -178,7 +178,11 @@ class DataLoader:
                     sale_price=data.get("sale_price"),
                     sizes=["XS", "S", "M", "L", "XL"],
                     in_stock=True,
-                    images=[f"https://placeholder.com/{data['product_id']}.jpg"]
+                    images=[
+                        f"https://picsum.photos/400/500?random={data['product_id']}",
+                        f"https://picsum.photos/400/500?random={data['product_id']}-2"
+                    ],
+                    url=f"https://example-store.com/products/{data['product_id'].lower()}"
                 )
                 products.append(product)
             except Exception as e:
@@ -259,6 +263,10 @@ class DataLoader:
             if not sizes:
                 sizes = ["S", "M", "L"]
             
+            images = []
+            if row.get("image_url"):
+                images = [url.strip() for url in row["image_url"].split(",") if url.strip()]
+            
             product = Product(
                 product_id=row.get("product_id", row.get("sku", "")),
                 name=row.get("name", row.get("product_name", "")),
@@ -269,7 +277,8 @@ class DataLoader:
                 sale_price=float(row.get("sale_price")) if row.get("sale_price") else None,
                 sizes=sizes,
                 in_stock=row.get("in_stock", "true").lower() == "true",
-                images=[row.get("image_url")] if row.get("image_url") else []
+                images=images,
+                url=row.get("product_url", row.get("url"))
             )
             
             return product
@@ -284,7 +293,7 @@ class DataLoader:
         fieldnames = [
             "product_id", "name", "category", "description", "price", 
             "sale_price", "colors", "material", "occasions", "seasons",
-            "style", "brand", "sizes", "in_stock", "image_url"
+            "style", "brand", "sizes", "in_stock", "image_url", "product_url"
         ]
         
         writer = csv.DictWriter(output, fieldnames=fieldnames)
@@ -306,7 +315,8 @@ class DataLoader:
                 "brand": product.attributes.brand or "",
                 "sizes": ",".join(product.sizes) if product.sizes else "",
                 "in_stock": str(product.in_stock).lower(),
-                "image_url": product.images[0] if product.images else ""
+                "image_url": ",".join(product.images) if product.images else "",
+                "product_url": product.url or ""
             }
             writer.writerow(row)
         
