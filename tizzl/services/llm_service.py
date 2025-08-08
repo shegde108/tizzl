@@ -144,7 +144,30 @@ class LLMService:
             raise
     
     def _generate_mock_response(self, user_prompt: str) -> str:
-        if "outfit" in user_prompt.lower():
+        # Check for specific item requests (like "what top goes with...")
+        if any(phrase in user_prompt.lower() for phrase in ["what top", "suggest a top", "top to go with", "what goes with", "pair with"]):
+            return """For dark bootcut denim, here are some great top options:
+
+**Classic Button-Down Shirt** (Product ID: SKU003)
+- White or light blue works beautifully with dark denim
+- Can be worn tucked in for polish or untucked for casual
+- Roll up sleeves for a relaxed vibe
+
+**Fitted Black Turtleneck** (Product ID: SKU004)  
+- Creates a sleek, sophisticated silhouette
+- Perfect for cooler weather
+- Easily dressed up or down with accessories
+
+**Soft Knit Sweater** (Product ID: SKU005)
+- Choose cream, camel, or navy for versatility
+- The relaxed fit balances the fitted bootcut silhouette
+- Great for layering
+
+**Styling Tips:**
+- Bootcut jeans work best with fitted tops to balance proportions
+- Tuck in blouses and shirts to define your waistline
+- Add a belt to enhance the silhouette"""
+        elif "outfit" in user_prompt.lower():
             return """
 **Outfit 1: Casual Weekend Brunch**
 - Classic White Cotton T-Shirt (Product ID: SKU001)

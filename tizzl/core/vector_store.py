@@ -122,9 +122,14 @@ class VectorStore:
                 if "brand" in filters and filters["brand"]:
                     where_clause["brand"] = {"$in": filters["brand"]}
             
+            collection_count = self.collection.count()
+            if collection_count == 0:
+                logger.warning("Vector store is empty, returning empty results")
+                return []
+                
             results = self.collection.query(
                 query_embeddings=[query_embedding],
-                n_results=min(top_k, self.collection.count()),
+                n_results=min(top_k, collection_count),
                 where=where_clause if where_clause else None,
                 include=["metadatas", "distances", "documents"]
             )
