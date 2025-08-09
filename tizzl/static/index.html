@@ -337,6 +337,34 @@
                     const itemCard = document.createElement('div');
                     itemCard.className = 'item-card';
                     
+                    // Make the whole card clickable if URL exists
+                    if (item.product.url) {
+                        itemCard.style.cursor = 'pointer';
+                        itemCard.onclick = () => window.open(item.product.url, '_blank');
+                        itemCard.style.transition = 'transform 0.2s, box-shadow 0.2s';
+                        itemCard.onmouseover = () => {
+                            itemCard.style.transform = 'translateY(-2px)';
+                            itemCard.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+                        };
+                        itemCard.onmouseout = () => {
+                            itemCard.style.transform = 'translateY(0)';
+                            itemCard.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
+                        };
+                    }
+                    
+                    // Add product image if available
+                    if (item.product.images && item.product.images.length > 0) {
+                        const itemImage = document.createElement('img');
+                        itemImage.src = item.product.images[0];
+                        itemImage.style.width = '100%';
+                        itemImage.style.height = '120px';
+                        itemImage.style.objectFit = 'cover';
+                        itemImage.style.borderRadius = '6px';
+                        itemImage.style.marginBottom = '8px';
+                        itemImage.alt = item.product.name;
+                        itemCard.appendChild(itemImage);
+                    }
+                    
                     const itemName = document.createElement('div');
                     itemName.className = 'item-name';
                     itemName.textContent = item.product.name;
@@ -345,8 +373,16 @@
                     itemPrice.className = 'item-price';
                     itemPrice.textContent = `$${item.product.price.toFixed(2)}`;
                     
+                    // Add SKU for reference
+                    const itemSku = document.createElement('div');
+                    itemSku.style.fontSize = '12px';
+                    itemSku.style.color = '#999';
+                    itemSku.style.marginTop = '4px';
+                    itemSku.textContent = `SKU: ${item.product.product_id}`;
+                    
                     itemCard.appendChild(itemName);
                     itemCard.appendChild(itemPrice);
+                    itemCard.appendChild(itemSku);
                     itemsDiv.appendChild(itemCard);
                 });
                 

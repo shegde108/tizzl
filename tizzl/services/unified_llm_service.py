@@ -88,10 +88,10 @@ Your response must be valid JSON with this exact structure:
 Guidelines:
 1. Extract 3-5 relevant search terms from the query
 2. Rank ALL provided products by relevance (0-1 score)
-3. Create 2-3 complete outfits using the most relevant products
-4. Provide concise, actionable styling advice
+3. ALWAYS create 2-3 complete outfits using the most relevant products, even for general advice queries
+4. Keep styling_advice brief (1-2 sentences) and focus on product recommendations
 5. Ensure all product_ids reference actual products from the input
-6. Keep responses concise to minimize tokens"""
+6. Prioritize showing products over giving advice - users want to see items from inventory"""
     
     def _build_unified_user_prompt(
         self,
@@ -118,7 +118,7 @@ Guidelines:
             if user_profile.budget_max:
                 user_context += f"Budget: ${user_profile.budget_max:.0f}"
         
-        prompt = f"""Process this styling request and return structured JSON:
+        prompt = f"""Process this request and return structured JSON with product recommendations:
 
 QUERY: {query}{user_context}
 
@@ -128,9 +128,11 @@ AVAILABLE PRODUCTS (ID, Name, Category, Price):
 Remember to:
 1. Extract search terms
 2. Rank ALL products with scores
-3. Create 2-3 outfits
-4. Provide styling advice
-5. Return valid JSON only"""
+3. ALWAYS create 2-3 outfits from available products
+4. Keep styling advice brief (focus on showing products)
+5. Return valid JSON only
+
+Even for general advice queries, prioritize showing actual products from inventory."""
         
         return prompt
     

@@ -1,5 +1,5 @@
 import re
-from typing import Dict, Any, Optional, Tuple
+from typing import Dict, Any, Tuple
 from enum import Enum
 import logging
 
@@ -7,7 +7,8 @@ logger = logging.getLogger(__name__)
 
 class QueryType(Enum):
     GREETING = "greeting"
-    STYLING = "styling"
+    RECOMMENDATION = "recommendation"  # For product recommendation requests
+    STYLING = "styling"  # For general styling advice
     GENERAL_QUESTION = "general_question"
     FEEDBACK = "feedback"
     HELP = "help"
@@ -34,14 +35,24 @@ class QueryRouter:
         r'\b(not\s+working|broken|error|wrong|incorrect)\b',
     ]
     
-    # Fashion/styling keywords that indicate styling intent
+    # Product recommendation patterns - these clearly indicate wanting specific products
+    RECOMMENDATION_PATTERNS = [
+        r'\b(do\s+you\s+have|show\s+me|find\s+me|suggest|recommend|give\s+me)\b.*\b(outfit|dress|shirt|pants|jeans|top|clothes|clothing|shoes|bag|accessories|sweater|jacket|blazer)\b',
+        r'\b(outfit|product|item)\s+(suggestion|recommendation|idea)s?\b',
+        r'\b(what\s+should\s+i\s+wear|what\s+to\s+wear)\b',
+        r'\b(need|want|looking\s+for)\s+.*(outfit|dress|shirt|pants|jeans|top|clothes|clothing|shoes|sweater)\b',
+        r'\b(summer|winter|formal|casual|work|date|party|brunch)\s+(outfit|dress|clothes|clothing)\b',
+        r'\b(under|within|budget)\s+\$?\d+\b',
+        r'\b(style|pair)\s+(with|my)\s+.*(jeans|dress|shirt|pants|skirt|blue\s+jeans)\b',
+        r'\b(shop|buy|purchase|get)\s+.*(outfit|clothes|dress|shirt|pants)\b',
+        r'\boutfits?\s+for\b',
+        r'\bshow\s+me\b.*\b(formal|casual|summer|winter)\b'
+    ]
+    
+    # Fashion/styling keywords that indicate general styling advice
     STYLING_KEYWORDS = [
-        'outfit', 'wear', 'style', 'fashion', 'clothes', 'clothing', 
-        'dress', 'shirt', 'pants', 'jeans', 'skirt', 'top', 'bottom',
-        'shoes', 'accessories', 'bag', 'jewelry', 'match', 'coordinate',
-        'occasion', 'event', 'date', 'work', 'casual', 'formal',
-        'color', 'pattern', 'trend', 'season', 'summer', 'winter',
-        'look', 'appearance', 'wardrobe', 'closet', 'shopping'
+        'style', 'fashion', 'trend', 'look', 'appearance', 'wardrobe', 'closet',
+        'color', 'pattern', 'season', 'match', 'coordinate', 'tips', 'advice'
     ]
     
     # General question indicators
@@ -72,21 +83,29 @@ class QueryRouter:
         if cls._is_feedback(query_lower):
             return QueryType.FEEDBACK, 0.9
         
-        # Check for styling/fashion queries
+        # Check for product recommendation requests first (higher priority)
+        if cls._is_recommendation_request(query_lower):
+            return QueryType.RECOMMENDATION, 0.9
+        
+        # Check for styling/fashion queries - but treat them as recommendations
         styling_score = cls._calculate_styling_score(query_lower)
         if styling_score > 0.3:  # Threshold for styling queries
-            return QueryType.STYLING, min(styling_score, 0.95)
+            # Even styling advice should return product recommendations
+            return QueryType.RECOMMENDATION, min(styling_score, 0.95)
         
         # Check if it's a general question
         if cls._is_general_question(query_lower):
-            # Could still be styling-related, check keywords
+            # Could still be recommendation-related, check for product keywords
+            if any(word in query_lower for word in ['outfit', 'clothes', 'dress', 'shirt', 'pants', 'jeans', 'wear', 'sweater', 'jacket', 'blazer', 'skirt', 'top', 'shoes', 'bag']):
+                return QueryType.RECOMMENDATION, 0.7
+            # Could still be styling-related, treat as recommendation
             if styling_score > 0.1:
-                return QueryType.STYLING, 0.6
+                return QueryType.RECOMMENDATION, 0.6
             return QueryType.GENERAL_QUESTION, 0.7
         
-        # Default to styling if uncertain (maintains backward compatibility)
-        if len(query_lower.split()) > 3:  # Longer queries likely styling
-            return QueryType.STYLING, 0.5
+        # Default to recommendation for longer queries with fashion context (maintains backward compatibility)
+        if len(query_lower.split()) > 3:  # Longer queries likely product requests
+            return QueryType.RECOMMENDATION, 0.5
         
         return QueryType.UNKNOWN, 0.3
     
@@ -110,6 +129,14 @@ class QueryRouter:
     def _is_feedback(cls, query: str) -> bool:
         """Check if query is providing feedback or reporting issues"""
         for pattern in cls.FEEDBACK_PATTERNS:
+            if re.search(pattern, query, re.IGNORECASE):
+                return True
+        return False
+    
+    @classmethod
+    def _is_recommendation_request(cls, query: str) -> bool:
+        """Check if query is asking for product recommendations"""
+        for pattern in cls.RECOMMENDATION_PATTERNS:
             if re.search(pattern, query, re.IGNORECASE):
                 return True
         return False

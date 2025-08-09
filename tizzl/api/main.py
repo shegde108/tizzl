@@ -7,6 +7,7 @@ from pydantic import BaseModel
 
 from models import Product, UserProfile, UserQuery, StylistResponse
 from services.stylist_service import StylistService
+from services.optimized_stylist_service import OptimizedStylistService
 from core.vector_store import VectorStore
 from core.config import settings
 from utils.data_loader import DataLoader
@@ -33,6 +34,7 @@ from api.retailer_endpoints import router as retailer_router
 app.include_router(retailer_router)
 
 stylist_service = StylistService()
+optimized_stylist_service = OptimizedStylistService()  # New optimized service
 vector_store = VectorStore()
 data_loader = DataLoader()
 
@@ -100,6 +102,42 @@ async def get_recommendations(request: StylistRequest):
         logger.error(f"Error getting recommendations: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
+@app.post("/api/v2/stylist/recommend")
+async def get_optimized_recommendations(request: StylistRequest):
+    """
+    Optimized recommendation endpoint with:
+    - Query routing for greetings
+    - Single LLM call
+    - Caching support
+    - Reduced latency
+    """
+    try:
+        user_query = UserQuery(
+            query=request.query,
+            user_id=request.user_id,
+            occasion=request.occasion,
+            budget=request.budget,
+            preferred_categories=request.categories or [],
+            excluded_categories=request.exclude_categories or [],
+            max_results=request.max_results or 20
+        )
+        
+        user_profile = None
+        if request.user_id:
+            user_profile = await _get_user_profile(request.user_id)
+        
+        # Use optimized service
+        response = await optimized_stylist_service.process_query(
+            user_query,
+            user_profile
+        )
+        
+        return response.dict()
+        
+    except Exception as e:
+        logger.error(f"Error getting optimized recommendations: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 @app.post("/api/stylist/advice")
 async def get_style_advice(query: str, user_id: Optional[str] = None):
     try:
@@ -113,6 +151,25 @@ async def get_style_advice(query: str, user_id: Optional[str] = None):
         
     except Exception as e:
         logger.error(f"Error getting style advice: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/api/v2/stylist/advice")
+async def get_optimized_style_advice(query: str, user_id: Optional[str] = None):
+    """
+    Optimized style advice with query routing
+    """
+    try:
+        user_profile = None
+        if user_id:
+            user_profile = await _get_user_profile(user_id)
+        
+        # Use optimized service which handles greetings
+        advice = await optimized_stylist_service.get_style_advice(query, user_profile)
+        
+        return {"advice": advice}
+        
+    except Exception as e:
+        logger.error(f"Error getting optimized style advice: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/api/products/search")
