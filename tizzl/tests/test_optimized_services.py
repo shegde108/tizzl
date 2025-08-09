@@ -26,14 +26,21 @@ class TestQueryRouter:
             assert query_type == QueryType.GREETING, f"Failed to detect greeting: {greeting}"
             assert confidence > 0.9
     
+<<<<<<< HEAD
     def test_recommendation_query_detection(self):
         """Test that product recommendation queries are properly detected"""
         recommendation_queries = [
+=======
+    def test_styling_query_detection(self):
+        """Test that styling queries are properly detected"""
+        styling_queries = [
+>>>>>>> 4aeb35814ae92192f4690eb7a3beb7388fe8ffd0
             "What should I wear to a wedding?",
             "I need an outfit for work",
             "Show me summer dresses",
             "What goes with black jeans?",
             "Find me a formal suit",
+<<<<<<< HEAD
             "I want casual clothes for the weekend",
             "Do you have outfit suggestions?",
             "Outfits for summer party brunch"
@@ -52,13 +59,21 @@ class TestQueryRouter:
             "Give me some fashion tips",
             "How should I style my wardrobe?",
             "What's trending this season?"
+=======
+            "I want casual clothes for the weekend"
+>>>>>>> 4aeb35814ae92192f4690eb7a3beb7388fe8ffd0
         ]
         
         for query in styling_queries:
             query_type, confidence = QueryRouter.classify_query(query)
+<<<<<<< HEAD
             # All styling queries should now be treated as recommendations
             assert query_type == QueryType.RECOMMENDATION, f"Failed to treat as recommendation: {query}"
             assert confidence > 0.3
+=======
+            assert query_type == QueryType.STYLING, f"Failed to detect styling query: {query}"
+            assert confidence > 0.5
+>>>>>>> 4aeb35814ae92192f4690eb7a3beb7388fe8ffd0
     
     def test_help_query_detection(self):
         """Test that help queries are properly detected"""
