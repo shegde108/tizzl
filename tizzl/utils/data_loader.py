@@ -10,6 +10,19 @@ logger = logging.getLogger(__name__)
 class DataLoader:
     
     def load_sample_products(self) -> List[Product]:
+        # Mapping product names to image filenames
+        image_map = {
+            "Classic White Cotton T-Shirt": "Classic-White-Cotton-T-Shirt.png",
+            "High-Waisted Black Denim Jeans": "High-Waisted-Black-Denim-Jeans.png", 
+            "Silk Midi Wrap Dress": "Silk-Midi-Wrap-Dress.png",
+            "Leather Bomber Jacket": "Leather-Bomber-Jacket.png",
+            "Canvas Low-Top Sneakers": "Canvas-Low-Top-Sneakers.png",
+            "Cashmere Knit Sweater": "Cashmere-Knit-Sweater.png",
+            "Pleated Midi Skirt": "Pleated-Midi-Skirt.png",
+            "Leather Crossbody Bag": "Leather-Crossbody-Bag.png",
+            "Gold Layered Necklace Set": "Gold-Layered-Necklace-Set.png",
+            "Linen Button-Up Shirt": "Linen-Buttonup-Shirt.png"
+        }
         sample_products = [
             {
                 "product_id": "SKU001",
@@ -179,8 +192,7 @@ class DataLoader:
                     sizes=["XS", "S", "M", "L", "XL"],
                     in_stock=True,
                     images=[
-                        f"https://picsum.photos/400/500?random={data['product_id']}",
-                        f"https://picsum.photos/400/500?random={data['product_id']}-2"
+                        f"/static/demo-images/{image_map.get(data['name'], data['name'].replace(' ', '-') + '.png')}"
                     ],
                     url=f"https://example-store.com/products/{data['product_id'].lower()}"
                 )

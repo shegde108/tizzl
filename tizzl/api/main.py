@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException, UploadFile, File, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 from typing import List, Optional, Dict, Any
 import logging
 from pydantic import BaseModel
@@ -32,6 +33,9 @@ app.add_middleware(
 # Include retailer router
 from api.retailer_endpoints import router as retailer_router
 app.include_router(retailer_router)
+
+# Mount static files for demo images
+app.mount("/static/demo-images", StaticFiles(directory="../demo-initialize"), name="demo-images")
 
 stylist_service = StylistService()
 optimized_stylist_service = OptimizedStylistService()  # New optimized service
